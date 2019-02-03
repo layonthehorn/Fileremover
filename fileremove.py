@@ -1,17 +1,48 @@
 #!/usr/bin/env python3
 
 # layonthehorn
-
 import sys, re, os
 
+# creating a usage statement for users
+usagestatment ="""Usage: {0} cwd|abs searchpattern""".format(sys.argv[0]) 
+
+# checking if the user supplied the right number of arguments
 if len(sys.argv) < 3:
-    print("""Usage: {0} FILEPATH FILEEXTENSION""".format(sys.argv[0]))
+    print(usagestatment)
     sys.exit(0)
 
-# Saves the users path to search
-filepath = sys.argv[1]
-# Saves the regular expression to search by
+# Saves the users operation mode 
+opmode= sys.argv[1]
+
+# if the user select cwd then the program used their pwd
+if opmode.lower() == "cwd":
+    userpwd = os.getcwd()
+
+# if the user selected abs they must supply an absolute path
+elif opmode.lower() == "abs":
+# asks the user for a path and checks that is is an absolute one 
+# also checks if the file does actually exist
+# continues the loop until both an absolute path is supplied and an existing path
+    while 1:
+        userpwd = input("Enter the absolute path. ")
+
+        if not (re.search(r"^/",userpwd)):
+            print("Must be an absolute path")
+            continue
+
+        if not (os.path.isdir(userpwd)):
+            print("Path does not exist.")
+            continue
+
+        break
+        
+else:
+    print(usagestatment)
+    sys.exit(0)
+
+# saving the search pattern 
 searchpat = sys.argv[2]
+
 # compiles the users regex for faster searching
 searchreg = re.compile(r"{0}$".format(searchpat))
 # creates an empty list to store the matched files
@@ -20,7 +51,7 @@ filelist = []
 dirlist = []
 
 # this searches through the file path supplied
-for direct, dirname, files in os.walk(filepath):
+for direct, dirname, files in os.walk(userpwd):
 # Goes through the list of files in a directory
     for mfile in files:
 # checks if any files match the regular expression
@@ -46,4 +77,17 @@ if len(filelist) != 0 and len(dirlist) != 0:
 else:
 # if no matches were found reports it to user
     print("No matches found with {0}.".format(searchpat))
-    
+
+# ---- Notable imports used ----
+#   os.walk() - Walks through the operating systems file path returning directories, files, and
+#   directories names.
+#   os.path.join() - Joins a directory path and a file name based on OS to form a absolute file path
+#   os.path.isdir() - Checks if a supplied path exists and returns true or false.
+#   os.getcwd() - Returns the users current working directory.
+#   sys.argv[] - Is a list of arguments supplied on the command line.
+#   sys.exit() - Will exit the program.
+#   re.search() - Will search the whole supplied string for a match to a regular expression.
+#   re.compile() - Compiles a regular expression for faster searching.
+#   zip() - Allows the program to iterate through two lists at once.
+#
+        
