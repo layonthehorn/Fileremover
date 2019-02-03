@@ -10,8 +10,33 @@ def pickopmode(opmode):
 
 # if the user select cwd then the program used their pwd
     if opmode.lower() == "cwd":
-        userpwd = os.getcwd()
+        try:
+            while 1:
+                addedpath = input("Enter an optional extra to your PWD.(Press enter for default) ")
 
+# This checks that the user did not enter an absolute path
+                if (re.search(r"^/",addedpath)):
+                        print("Must be a relative path.")
+                        continue
+
+# if the user did not enter any addons it skips this code
+                if addedpath != "":
+                    userpwd = os.path.join(os.getcwd(),addedpath)
+               
+# This checks if the directory exists
+                    if not os.path.isdir(userpwd):
+                        print("That directory does not exist.")
+                        continue
+                    else:
+                        break
+                else:
+                    userpwd = os.getcwd()
+                    break
+
+        except KeyboardInterrupt:
+            print("\nOperation Canceled")
+            sys.exit(0)
+        
 # if the user selected abs they must supply an absolute path
     elif opmode.lower() == "abs":
 # asks the user for a path and checks that is is an absolute one 
