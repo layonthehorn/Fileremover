@@ -3,7 +3,7 @@
 # layonthehorn
 import sys, re, os
 
-# creating a usage statment for users
+# creating a usage statement for users
 usagestatment ="""Usage: {0} cwd|abs searchpattern""".format(sys.argv[0]) 
 
 # checking if the user supplied the right number of arguments
@@ -18,15 +18,24 @@ opmode= sys.argv[1]
 if opmode.lower() == "cwd":
     userpwd = os.getcwd()
 
-# if the user selected abs they must supply a absolute path
+# if the user selected abs they must supply an absolute path
 elif opmode.lower() == "abs":
 # asks the user for a path and checks that is is an absolute one 
-    userpwd = input("Enter the absolute path. ")
-# if the check returns false the program exits
-    if not (re.search(r"^/",userpwd)):
-        print("Must be an absolute path")
-        sys.exit(0)
-# exits if the user did not enter a accepted op mode
+# also checks if the file does actually exist
+# continues the loop until both an absolute path is supplied and an existing path
+    while 1:
+        userpwd = input("Enter the absolute path. ")
+
+        if not (re.search(r"^/",userpwd)):
+            print("Must be an absolute path")
+            continue
+
+        if not (os.path.isdir(userpwd)):
+            print("Path does not exist.")
+            continue
+
+        break
+        
 else:
     print(usagestatment)
     sys.exit(0)
@@ -68,4 +77,17 @@ if len(filelist) != 0 and len(dirlist) != 0:
 else:
 # if no matches were found reports it to user
     print("No matches found with {0}.".format(searchpat))
-    
+
+# ---- Notable imports used ----
+#   os.walk() - Walks through the operating systems file path returning directories, files, and
+#   directories names.
+#   os.path.join() - Joins a directory path and a file name based on OS to form a absolute file path
+#   os.path.isdir() - Checks if a supplied path exists and returns true or false.
+#   os.getcwd() - Returns the users current working directory.
+#   sys.argv[] - Is a list of arguments supplied on the command line.
+#   sys.exit() - Will exit the program.
+#   re.search() - Will search the whole supplied string for a match to a regular expression.
+#   re.compile() - Compiles a regular expression for faster searching.
+#   zip() - Allows the program to iterate through two lists at once.
+#
+        
