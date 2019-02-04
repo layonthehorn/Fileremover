@@ -1,6 +1,10 @@
 #!/usr/bin/env python3
 
 # layonthehorn
+# This program searches through a directory tree, and finds files that match a regular expression.
+# You can give a file extension, and it will ask per file to delete it.
+# You can give an absolute file path or use your pwd. If you use your pwd you can add an optional
+# addtion to the path.
 import sys, re, os
 
 def pickopmode(opmode):
